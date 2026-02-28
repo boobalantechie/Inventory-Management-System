@@ -1,0 +1,210 @@
+ {% extends 'base.html' %}
+{% block content %}
+
+
+    <h2 class="mb-4">product management </h2>
+    
+      <!-- # normal way logout -->
+    <!-- <a href="{% url 'logout' %}" class="btn btn-danger">logout</a>  -->
+<div class="container mt-2" >
+    <div class="card shadow p-4" >
+            <form method="POST" class="row g-2 mb-4" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-md-2" >
+            <label class="form-label">category</label>
+            {{ form.category }}<button class="btn btn-outline-primary"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#categoryModal" >+</button>
+            
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">name</label>
+            {{ form.name }}
+            <!-- <input type="text" name="name" class="form-control" placeholder="enter name"> -->
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">price</label>
+            {{ form.price }}
+            <!-- <input type="number" name="price" class="form-control" placeholder="enter price"> -->
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">quantity</label>
+            {{ form.quantity }}
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">image</label>
+            {{ form.image }}
+            <!-- <input type="number" name="price" class="form-control" placeholder="enter price"> -->
+        </div>
+
+        <div class="form-check form-switch mt-2 col-md-2 mt-5">
+            <label class="form-check-label">status</label>
+            {{ form.status }}
+        </div>
+
+        <div class="col-md-1">
+            <button type="submit" name="add_product" class="btn btn-primary w-100">add</button>
+        </div>        
+    </form>
+
+    </div>
+</div>
+
+
+    <form method="GET" class="mt-4 mb-3">
+         <div class="input-group" >
+            <input type="text" name="search" class="form-control" placeholder="search product" value="{{ request.GET.search }}">
+            <button type="submit" class="btn btn-dark">search</button>
+         </div>
+    </form>
+    
+    <table class="table table-bordered table-striped">
+        <thead class="">
+            <tr>
+                <th>id</th>
+                <th>category</th>
+                <th>name</th>
+                <th>price</th>
+                <th>quantity</th>
+                <th>image</th>
+                <th>status</th>
+                {% if user.is_staff %}
+                <th width="150">actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{product.id}}</td>
+            <td>{{product.category.name}}</td>
+            <td>{{product.name}}</td>
+            <td>{{product.price}}</td>
+            <td>{{product.quantity}}</td>
+            <td>{% if product.image %}
+                <img src="{{ product.image.url }}" alt="image" width="60">
+                {% endif %}
+            </td>
+            {% if user.is_staff %}
+
+            <td>
+                {% if product.status %}
+                <span class="badge bg-success" >active</span>
+                {% else %}
+                <span class="badge bg-danger" >inactive</span>
+                {% endif %}
+            </td>
+            <td>
+                <!-- # dynamic url path -->
+                <a href="{% url 'edit' product.id %}" class="btn btn-sm btn-warning">edit</a>
+                <!-- <a href="/delete/{{product.id}}">delete</a> #hard coded url paath -->
+                <!-- <a href="{% url 'delete' product.id %}" class="btn btn-sm btn-danger">delete</a> -->
+                 <button class="btn btn-danger btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal{{product.id}}">delete
+                </button>
+            </td>
+            {% endif %}
+        </tr>
+        <!-- <p> / price - </p> -->
+    
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">no products found</td>
+        </tr>
+        <!-- <P>no products found</P> -->
+
+
+
+
+        {% endfor %}
+
+
+    </tbody>
+    </table>
+
+{% for product in products %} 
+
+        <div class="modal fade" id="deleteModal{{product.id}}" >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>confirm delete</h5>
+                    </div>
+                    <div class="modal-body" >
+                        are you sure you want to delete {{ product.name }}
+                    </div>
+                    <div class="modal-footer" >
+                        <a href="{% url 'delete' product.id %}" class="btn btn-danger">yes delete</a>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endfor %}
+<div class="modal fade" id="categoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h5>Add Category</h5>
+                    <button class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    {{ category_form.name }}
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success"
+                            name="add_category">
+                        Save
+                    </button>
+
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<nav class="mt-3" >
+    <ul class="pagination">
+        {% if products.has_previous %}
+        <li class="page-item" >
+            <a class="page-link" href="?page={{ products.previous_page_number }}">previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in products.paginator.page_range %}
+        <li class="page-item {% if products.number == num %} active {% endif %}">
+            <a class="page-link" href="?page={{num}}">{{num}}</a>
+        </li>
+        {% endfor %}
+
+        {% if products.has_next %}
+        <li class="page-item" >
+            <a class="page-link" href="?page={{ products.next_page_number }}">next</a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+
+
+
+    {% endblock %}

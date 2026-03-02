@@ -82,7 +82,7 @@ def home(request):
                     "category": new_category.id
                 })
         if 'add_product' in request.POST:
-            product_form=ProductForm(request.POST)
+            product_form=ProductForm(request.POST,request.FILES)
             if product_form.is_valid():
                 product_form.save()
                 messages.success(request,"product addded successfully")

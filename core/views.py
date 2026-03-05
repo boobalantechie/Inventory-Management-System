@@ -58,6 +58,7 @@ def dashboard(request):
 def home(request):
     search_query=request.GET.get("search")
     products=Product.objects.all()
+    Categories=Category.objects.all()
     print("searchs",search_query)
     if search_query:
         products=products.filter(name__icontains=search_query)
@@ -70,6 +71,7 @@ def home(request):
     category_form=CategoryForm()
     product_form=ProductForm()
     if request.method=="POST":
+        # print(request.POST)
         # form=ProductForm(request.POST,request.FILES)
 
 
@@ -93,9 +95,12 @@ def home(request):
             #     messages.success(request,"product added successfully")
             #     return redirect("home")
     else:
-        form=ProductForm()
+        product_form=ProductForm()
     # Products=Product.objects.all()
-    return render(request,"home.html",{"products":products,"form":product_form,"category_form":category_form})
+    return render(request,"home.html",{"products":products,
+                                       "form":product_form,
+                                       "category_form":category_form,
+                                       'categories':Categories})
 
 
 
@@ -127,8 +132,21 @@ def edit_product(request,id):
     else:
         form=ProductForm(instance=product)
 
-        # return redirect("home")
+        # return redirect("home")   
     return render(request,"edit.html",{"form":form})
+
+
+def delete_category(request,id):
+    # if request.method == "POST":
+        # category_id = request.POST.get('category')
+        # if  category_id:
+            # Category.objects.filter(id=category_id).delete()
+    
+    category=get_object_or_404(Category,id=id)
+    category.delete()
+    messages.success(request,"category deleted successfully")
+    return redirect('home')
+
 
 
 def login_view(request):
@@ -175,3 +193,5 @@ def signup_view(request):
         return redirect("login")
 
     return render(request,"signup.html")
+
+

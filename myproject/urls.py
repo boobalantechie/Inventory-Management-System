@@ -27,6 +27,7 @@ urlpatterns = [
     path('signup', views.signup_view,name="signup"),
     path('dashboard', views.dashboard,name="dashboard"),
     path('', views.login_view,name="login"),
+    path('category/delete/<int:id>/',views.delete_category,name='delete_category'),
     path('home', views.home,name="home"),
     path('logout', views.logout_view,name="logout"),
     path('delete/<int:id>', views.delete_product,name="delete"),

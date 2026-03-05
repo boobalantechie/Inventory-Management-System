@@ -8,11 +8,11 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
-    category=models.ForeignKey(Category,on_delete=models.CASCADE,null=True,blank=True)
+    category=models.ForeignKey(Category,on_delete=models.CASCADE,null=False,blank=False)
     name=models.CharField(max_length=100)
     price=models.DecimalField(max_digits=10,decimal_places=2)
     image=models.ImageField(upload_to='products/',null=True,blank=True)
-    quantity=models.IntegerField(default=0)
+    quantity=models.IntegerField()
     status=models.BooleanField(default=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)

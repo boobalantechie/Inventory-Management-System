@@ -10,12 +10,16 @@ class ProductForm(forms.ModelForm):
         # fields=['category','name','price','quantity','image','status']
         widgets = {
             'category': forms.Select(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control','placeholder':'enter name'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control','placeholder':'enter price'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control','placeholder':'enter quantity'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
             'status': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+        self.fields['category'].empty_label = "Select Category"
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -23,5 +27,5 @@ class CategoryForm(forms.ModelForm):
         fields=['name']
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'})
+            'name': forms.TextInput(attrs={'class': 'form-control','placeholder':'enter category'})
         }

@@ -14,18 +14,28 @@
 
 </head>
 <body>
+{% if request.user.is_authenticated %}
 <!-- # new code sidebar styled   -->
-
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container-fluid">
+        <span class="navbar-brand fw-bold">My App</span>
+        <div class="ms-auto d-flex  align-items-center">
+            <span class="text-white fw-bold me-3">
+                User : {{ request.user.username}}
+            </span>
+            <a href="{% url 'logout' %}" class="btn btn-light btn-sm">Logout</a>
+        </div>
+    </div>
+</nav>
 
 <div class="d-flex" >
-    {% if request.user.is_authenticated %}
-    <div class="sidebar text-white bg-dark p-3" style="width: 220px;min-height: 100vh;" >
-        <h4>my app</h4>
-        <br>
+    
+    <div class="sidebar p-3" style="width: 220px;min-height: 100vh;" >
+        <!-- <h4>my app</h4> -->
 
-        <a href="{% url 'dashboard' %}" class="text-white text-decoration-none d-block mb-2" >dasboard</a>
-        <a href="{% url 'home' %}" class="text-white text-decoration-none d-block mb-2" >products</a>
-        <a href="{% url 'logout' %}" class="text-white text-decoration-none d-block mb-2" >logout</a>
+        <a href="{% url 'dashboard' %}" class="text-decoration-none d-block mb-2" >dasboard</a>
+        <a href="{% url 'home' %}" class="text-decoration-none d-block mb-2" >products</a>
+        <!-- <a href="{% url 'logout' %}" class="text-white text-decoration-none d-block mb-2" >logout</a> -->
     </div>
     {% endif %}
     <div class="p-4 flex-grow-1">
